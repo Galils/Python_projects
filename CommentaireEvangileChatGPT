@@ -1,0 +1,62 @@
+!pip install openai
+
+import requests
+import datetime
+import openai
+import textwrap
+import smtplib
+
+# Préparation de la requête à partir de l'API AELF, sous forme d'une liste qui sera injectée.
+
+today = datetime.datetime.now().strftime("%Y-%m-%d")
+url = "https://api.aelf.org/v1/messes/" + today + "/france"
+
+response = requests.get(url)
+data = response.json()
+for messes in data["messes"]:
+    for lecture in messes["lectures"]:
+        ref = lecture.get("ref")
+
+prompt1 = 'Cite la traduction Bible de Jérusalem de l évangile : ' + ref
+prompt2 = "Imagine que tu étudies la Bible depuis 20 ans. Propose moi un commentaire en 400 mots : " + ref
+prompt3 = "Propose 5 points à approfondir pour le texte : " + ref
+
+prompts = [prompt1, prompt2, prompt3]
+temperatures = [0.2, 0.75, 0.6]
+
+# REQUETE
+
+# Configurer votre clé d'API OpenAI
+openai.api_key = "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"
+
+response_filtree = []
+
+# Envoyer la requête prompt au modèle GPT et obtenir une réponse
+for i in range(0, len(prompts)):
+    response = openai.Completion.create(
+    engine="text-davinci-003",
+    prompt=prompts[i],
+    max_tokens=1024,
+    n=1,
+    stop=None,
+    temperature=temperatures[i],
+    )
+  
+    response_filtree.append(response["choices"][0]["text"])
+  
+# Affichage de la réponse obtenue
+width = 50
+print(textwrap.fill(response_filtree[i], width))
+print('\n')
+  
+# Connexion au serveur
+serveur = smtplib.SMTP('smtp.gmail.com', 587)
+serveur.starttls()
+serveur.login("emmanuelfix44@gmail.com", 'dwyfmelpdquinvqh')
+message = response_filtree[0] + response_filtree[1] + response_filtree[2]
+
+# Message à envoyer
+serveur.sendmail("emmanuelfix44@gmail.com", "fix.emmanuel@yahoo.fr", message.encode('utf-8'))
+serveur.quit()
+  
+  
