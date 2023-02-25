@@ -27,7 +27,7 @@ temperatures = [0.2, 0.75, 0.6]
 # REQUETE
 
 # Configurer votre clé d'API OpenAI
-openai.api_key = "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"
+openai.api_key = ""
 
 response_filtree = []
 
@@ -52,7 +52,7 @@ print('\n')
 # Connexion au serveur
 serveur = smtplib.SMTP('smtp.gmail.com', 587)
 serveur.starttls()
-serveur.login("emmanuelfix44@gmail.com", 'dwyfmelpdquinvqh')
+serveur.login("emmanuelfix44@gmail.com", '')
 message = response_filtree[0] + response_filtree[1] + response_filtree[2]
 
 # Message à envoyer
